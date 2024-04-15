@@ -1,0 +1,47 @@
+name: Push to Artifact Registry
+
+on:
+    push:
+      branches: [ "sum" ]
+
+env:
+  IMAGE_NAME: '<your-image-tag>'
+  PROJECT_ID: 'prj-ltts-com-api-hub'
+  AR_REPO_LOCATION: 'asia-south1'
+  AR_URL: 'asia-south1-docker-pkg.dev/prj-ltts-com-api-hub/ltts-devx-mf-ts/'
+  SERVICE_ACCOUNT: 'gar-gke@prj-ltts-com-api-hub.iam.gserviceaccount.com' 
+  WORKLOAD_IDENTITY_PROVIDER: 'projects/945761082089/locations/global/workloadidentityPools/gar-gke/providers/github'
+
+jobs:
+  push_to_ar:
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    runs-on: self-hosted
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Google Auth
+        id: auth
+        uses: 'google-github-actions/auth@v2'
+        with:
+          token_format: 'access_token'
+          project_id: ${{ env.PROJECT_ID }}
+          service_account: ${{ env.SERVICE_ACCOUNT }}
+          workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
+
+      - name: Docker Auth
+        id: docker-auth
+        uses: 'docker/login-action@v1'
+        with:
+          username: 'oauth2accesstoken'
+          password: '${{ steps.auth.outputs.access_token }}'
+          registry: '${{ env.AR_REPO_LOCATION }}-docker.pkg.dev'
+
+      - name: Pull, Tag, and Push Nginx Image
+        run: |-
+          docker pull nginx
+          docker tag nginx "${{ env.AR_URL }}:${{ env.IMAGE_NAME }}"
+          docker push "${{ env.AR_URL }}:${{ env.IMAGE_NAME }}"
