@@ -20,6 +20,8 @@ jobs:
 
     runs-on: self-hosted
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Google Auth
         id: auth
@@ -27,9 +29,6 @@ jobs:
         with:
           service_account: ${{ env.SERVICE_ACCOUNT }}
           workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
-      
-      - name: Checkout
-        uses: actions/checkout@v4
         
       - name: Docker Auth
         id: docker-auth
