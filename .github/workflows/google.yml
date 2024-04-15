@@ -27,7 +27,7 @@ jobs:
         id: auth
         uses: 'google-github-actions/auth@v1.1.1'
         with:
-          token_format: access_token
+          token_format: 'id-token'
           service_account: ${{ env.SERVICE_ACCOUNT }}
           workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
         
