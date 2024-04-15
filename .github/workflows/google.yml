@@ -47,5 +47,5 @@ jobs:
       - name: Tag Nginx image
         run: docker tag nginx "asia-south1-docker-pkg.dev/prj-ltts-com-api-hub/ltts-devx-mf-ts/:test"
 
-- name: Push Nginx image
-  run: docker push "asia-south1-docker-pkg.dev/prj-ltts-com-api-hub/ltts-devx-mf-ts/:test"
+      - name: Push Nginx image
+        run: docker push "asia-south1-docker-pkg.dev/prj-ltts-com-api-hub/ltts-devx-mf-ts/:test"
