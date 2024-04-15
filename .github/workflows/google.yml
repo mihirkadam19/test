@@ -38,9 +38,14 @@ jobs:
       #    password: '${{ steps.auth.outputs.access_token }}'
       #    registry: '${{ env.AR_REPO_LOCATION }}-docker.pkg.dev'
 
-      - name: Pull, Tag, and Push Nginx Image
-        run: |-
-          gcloud auth configure-docker asia-south1-docker.pkg.dev
-          docker pull nginx
-          docker tag nginx "${{ env.AR_URL }}:${{ env.IMAGE_NAME }}"
-          docker push "${{ env.AR_URL }}:${{ env.IMAGE_NAME }}"
+      - name: Configure Docker with gcloud
+        run: gcloud auth configure-docker asia-south1-docker.pkg.dev
+
+      - name: Pull Nginx image
+        run: docker pull nginx
+
+      - name: Tag Nginx image
+        run: docker tag nginx "asia-south1-docker-pkg.dev/prj-ltts-com-api-hub/ltts-devx-mf-ts/:test"
+
+- name: Push Nginx image
+  run: docker push "asia-south1-docker-pkg.dev/prj-ltts-com-api-hub/ltts-devx-mf-ts/:test"
